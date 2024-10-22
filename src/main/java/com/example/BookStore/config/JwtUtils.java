@@ -2,11 +2,13 @@ package com.example.BookStore.config;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.Date;
 
 @Component
@@ -14,7 +16,7 @@ import java.util.Date;
 public class JwtUtils {
 
     private final byte[] secretKey;
-    private final long expirationTimeMs = 1000 * 60 * 60; // 1 giờ
+    private final long expirationTimeMs = 1000 * 60 * 1; // 1 giờ
 
     public JwtUtils() {
         this.secretKey = "this_is_a_book_online_website_secretkey".getBytes();  // Chuyển đổi khóa bí mật thành byte[]
@@ -49,4 +51,28 @@ public class JwtUtils {
         // 5. Trả về token dạng chuỗi
         return signedJWT.serialize();
     }
+
+    public boolean verifyToken(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWSVerifier verifier = new MACVerifier(secretKey);
+
+            if (!signedJWT.verify(verifier)) {
+                log.error("Token verification failed");
+                return false;
+            }
+
+            Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            if (expirationTime.before(new Date())) {
+                log.error("Token has expired");
+                return false;
+            }
+
+            return true;
+        } catch (ParseException | JOSEException e) {
+            log.error("Error while verifying token", e);
+            return false;
+        }
+    }
+
 }
