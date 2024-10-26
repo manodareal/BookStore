@@ -2,6 +2,7 @@ package com.example.BookStore.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 @Data
 @NoArgsConstructor
@@ -9,7 +10,8 @@ import lombok.*;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse <T> {
-    private int code = 1000;
+    private int code;
     private String message;
     private T result;
+
 }

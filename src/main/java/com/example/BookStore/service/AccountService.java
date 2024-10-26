@@ -1,11 +1,14 @@
 package com.example.BookStore.service;
 
+import com.example.BookStore.dto.mapper.AccountMapper;
 import com.example.BookStore.dto.request.CreateAccountRequest;
 import com.example.BookStore.dto.request.UpdateAccountRequest;
+import com.example.BookStore.dto.response.AccountDTO;
 import com.example.BookStore.entity.Account;
 import com.example.BookStore.exception.AppException;
 import com.example.BookStore.exception.ErrorCode;
 import com.example.BookStore.repo.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,12 +19,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AccountService {
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
-
-    public Account createAccount(CreateAccountRequest request){
+    public AccountDTO createAccount(CreateAccountRequest request){
 
         if(accountRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -34,29 +37,38 @@ public class AccountService {
                 .lastName(request.getLastName())
                 .dateOfBirth(request.getDateOfBirth())
                 .build();
+        accountRepository.save(account);
 
-        return accountRepository.save(account);
+        return accountMapper.toAccountDTO(account);
     }
 
-    public List<Account> getAccounts(){
-        return accountRepository.findAll();
+    public List<AccountDTO> getAccounts(){
+        return accountRepository.findAll()
+                .stream()
+                .map(accountMapper::toAccountDTO)
+                .toList();
     }
 
-    public Account getAccountById(Long id){
-        return accountRepository.findById(id).orElseThrow(
+    public AccountDTO getAccountById(Long id){
+        return accountRepository.findById(id)
+                .map(accountMapper::toAccountDTO)
+                .orElseThrow(
                 () -> new AppException(ErrorCode.USER_EXISTED)
         );
     }
 
-    public Account updateAccount(Long id, UpdateAccountRequest request){
-        Account account = getAccountById(id);
+    public AccountDTO updateAccount(Long id, UpdateAccountRequest request){
+        Account existAccount = accountRepository.findById(id).orElseThrow(
+                        () -> new AppException(ErrorCode.USER_EXISTED));
 
-        account.setPassword(request.getPassword());
-        account.setFirstName(request.getFirstName());
-        account.setLastName(request.getLastName());
-        account.setDateOfBirth(request.getDateOfBirth());
+        existAccount.setPassword(request.getPassword());
+        existAccount.setFirstName(request.getFirstName());
+        existAccount.setLastName(request.getLastName());
+        existAccount.setDateOfBirth(request.getDateOfBirth());
 
-        return accountRepository.save(account);
+        accountRepository.save(existAccount);
+
+        return accountMapper.toAccountDTO(existAccount);
 
     }
 

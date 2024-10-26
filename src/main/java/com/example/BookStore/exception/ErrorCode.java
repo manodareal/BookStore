@@ -1,22 +1,30 @@
 package com.example.BookStore.exception;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(999, "Uncategorized Error"),
-    USER_EXISTED(1001, "user existed"),
-    USER_NOT_EXISTED(1002, "User not existed"),
-    USERNAME_INVALID(1003, "Username must be at least 3 characters"),
-    PASSWORD_INVALID(1004, "Password must be at least 8 characters"),
-    UNAUTHENTICATED(1005, "Unauthenticated")
+    UNCATEGORIZED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Uncategorized Error"),
+    USER_EXISTED(HttpStatus.CONFLICT, "User existed"),
+    USER_NOT_EXISTED(HttpStatus.NOT_FOUND, "User not existed"),
+    USERNAME_INVALID(HttpStatus.BAD_REQUEST, "Username must be at least 3 characters"),
+    PASSWORD_INVALID(HttpStatus.BAD_REQUEST, "Password must be at least 8 characters"),
+    UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Unauthenticated");
 
-    ;
-    private int code;
-    private String message;
+    private final HttpStatus httpStatus;
+    private final String message;
 
-    ErrorCode(int code, String message) {
-        this.code = code;
+    ErrorCode(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
         this.message = message;
+    }
+
+    public int getCode() {
+        return httpStatus.value();
+    }
+
+    public String getReasonPhrase() {
+        return httpStatus.getReasonPhrase();
     }
 }
