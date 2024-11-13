@@ -1,18 +1,16 @@
 package com.example.BookStore.dto.request;
 
-        import com.example.BookStore.enumration.Role;
-        import com.example.BookStore.exception.ErrorCode;
-        import jakarta.validation.Valid;
-        import jakarta.validation.constraints.*;
-        import lombok.*;
+import com.example.BookStore.enumration.Role;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
-        import java.time.LocalDate;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateAccountRequest {
+public class RegistrationRequest {
     @Size(min = 3, message = "USERNAME_INVALID")
     private String username;
 
@@ -28,9 +26,5 @@ public class CreateAccountRequest {
     private String lastName;
     @Email
     private String email;
-
-    private Role role;
-
     private LocalDate dateOfBirth;
-
 }

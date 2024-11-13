@@ -10,9 +10,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AccountDTO {
 
+    private Long id;
     private String username;
 
     private String firstName;
+    private String email;
 
     private String lastName;
 

@@ -39,7 +39,6 @@ public class AuthenticationController {
         var result = authenticationService.introspect(resquest);
         return ApiResponse.<IntrospectTokenResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Login successful")
                 .result(result)
                 .build();
     }

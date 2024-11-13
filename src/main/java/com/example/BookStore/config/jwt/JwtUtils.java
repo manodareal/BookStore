@@ -1,4 +1,4 @@
-package com.example.BookStore.config;
+package com.example.BookStore.config.jwt;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -22,7 +22,7 @@ public class JwtUtils {
         this.secretKey = "this_is_a_book_online_website_secretkey".getBytes();  // Chuyển đổi khóa bí mật thành byte[]
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         // 1. Tạo JWT Header
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
                 .type(JOSEObjectType.JWT) // Thêm kiểu token (JWT)
@@ -30,7 +30,7 @@ public class JwtUtils {
 
         // 2. Tạo JWT Claims
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(email)
                 .issuer("BookStore")
                 .issueTime(new Date())
                 .expirationTime(new Date(new Date().getTime() + expirationTimeMs))

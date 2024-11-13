@@ -1,6 +1,7 @@
 package com.example.BookStore.dto.request;
 
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AuthenticationRequest {
-    @Size(min = 3, message = "USERNAME_INVALID")
-    private String username;
+    @Email
+    private String email;
 
     @Size(min = 8, message = "PASSWORD_INVALID")
     @NotEmpty(message = "Please provide a password")

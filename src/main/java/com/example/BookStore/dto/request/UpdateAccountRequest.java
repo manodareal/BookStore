@@ -1,5 +1,6 @@
 package com.example.BookStore.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -22,6 +23,8 @@ public class UpdateAccountRequest {
     @Pattern(regexp = "[a-zA-Z][a-zA-Z ]+")
     @NotEmpty(message = "Please provide your last name")
     private String lastName;
+    @Email
+    private String email;
 
     private LocalDate dateOfBirth;
 }
